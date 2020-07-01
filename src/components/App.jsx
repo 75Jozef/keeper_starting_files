@@ -5,23 +5,17 @@ import Note from "./Note";
 import CreateArea from "./CreateArea";
 
 function App() {
-  const [notes, updateNotes] = useState({
-    key: 0,
-    id: 0,
-    title: "",
-    note: ""
-  });
+  const [notes, updateNotes] = useState([]);
 
-  function addNote() {
-    const newNote = { title: titleText, note: noteText };
+  function addNote(newNote) {
     updateNotes(prevNotes => {
-      return { ...prevNotes, newNote };
+      return [...prevNotes, newNote];
     });
   }
 
-  function deleteItem(id) {
+  function deleteNote(id) {
     updateNotes(prevNotes => {
-      return prevNotes.filter((item, index) => {
+      return prevNotes.filter((note, index) => {
         return index !== id;
       });
     });
@@ -30,7 +24,8 @@ function App() {
   return (
     <div>
       <Header />
-      <CreateArea onClick={addNote} />
+      <CreateArea onAdd={addNote} />
+      {/* tu pošlem odkaz na funkciu addNote, ktorú keď použijem na inom liste - napr. v CreateArea funkcii, tak si pustí funkciu priamo v App() a ešte si so sebou aj prinesie alebo funkciu alebo nejaký objekt či premennú; v tomto prípade Note; takže nebudem posielať do CreateArea hodnotu, ale posuniem tam odkaz na funkciu, ktorá sa pustí tu; ako shortcut */}
 
       {notes.map((note, index) => {
         return (
@@ -39,7 +34,7 @@ function App() {
             id={index}
             title={note.title}
             content={note.content}
-            onChecked={deleteItem}
+            onDelete={deleteNote}
           />
         );
       })}

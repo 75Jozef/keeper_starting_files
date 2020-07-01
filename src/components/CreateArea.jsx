@@ -1,17 +1,27 @@
 import React, { useState } from "react";
+import Note from "./Note";
 
-function CreateArea() {
-  const [titleText, changeTitleText] = useState("");
-  const [noteText, changeNoteText] = useState("");
+function CreateArea(props) {
+  const [note, setNote] = useState([
+    {
+      title: "",
+      content: ""
+    }
+  ]);
 
   function handleChange(event) {
     const { name, value } = event.target;
 
-    if (name === "title") {
-      changeTitleText(value);
-    } else {
-      changeNoteText(value);
-    }
+    setNote(prevNote => {
+      return { ...prevNote, [name]: value };
+    });
+  }
+
+  function submitNote(event) {
+    event.preventDefault();
+    // //táto call funcia zamedzí primárne tomu, aby sa refreshla obrazovka po stlačení buttonu, ktorý je vnútri <form>, pretože to je jeho primárna funkcia, aby reloadol stránku; takto po stlačení buttonu, ktorý leží priamo vo formulári môžeme zamedziť tomu, aby refrešoval;
+    props.onAdd(note);
+    //tu pošleme do App.jsx note cez prop, ktorou je vlastne funkcia,ktorá sa púšťa nie tu v tejto funkcii ale púšťa sa v App.jsx ako AddNote();
   }
 
   return (
@@ -21,7 +31,7 @@ function CreateArea() {
           onChange={handleChange}
           name="title"
           placeholder="Title"
-          value={titleText}
+          value={note.title}
           autoComplete="off"
         />
         <textarea
@@ -30,9 +40,9 @@ function CreateArea() {
           placeholder="Take a note..."
           rows="3"
           autoComplete="off"
-          value={noteText}
+          value={note.value}
         />
-        <button onClick={addNote}>Add</button>
+        <button onClick={submitNote}>Add</button>
       </form>
     </div>
   );
